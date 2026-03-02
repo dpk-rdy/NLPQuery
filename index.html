@@ -297,18 +297,7 @@
             }
         }
 
-        .race-number-label {
-            position: absolute;
-            bottom: -4px;
-            right: -8px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(0.45rem, 1.4vw, 0.6rem);
-            letter-spacing: 2px;
-            color: var(--rb-gray);
-            background: var(--rb-navy);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
+
 
         /* ── NAME ── */
         .name-line {
@@ -766,7 +755,6 @@
         <!-- Race number -->
         <div class="race-number-wrap">
             <div class="race-number">26</div>
-            <div class="race-number-label">LAPS OF LIFE</div>
         </div>
 
         <!-- Name -->
@@ -822,6 +810,8 @@
             const ctx = canvas.getContext("2d");
             let W = canvas.width = window.innerWidth;
             let H = canvas.height = window.innerHeight;
+            const isMobile = W < 768;
+
             window.addEventListener("resize", () => {
                 W = canvas.width = window.innerWidth;
                 H = canvas.height = window.innerHeight;
@@ -862,15 +852,15 @@
                     this.x += this.vx + Math.sin(this.wobble) * 0.8;
                     this.y += this.vy;
                     this.rotation += this.rotationSpeed;
-                    this.vy += 0.04; // gravity
+                    this.vy += 0.04;
                     if (this.y > H + 20) this.init(true);
                 }
                 draw() {
-                    ctx.save();
                     ctx.globalAlpha = this.opacity;
+                    ctx.fillStyle = this.color;
+                    ctx.save();
                     ctx.translate(this.x, this.y);
                     ctx.rotate(this.rotation);
-                    ctx.fillStyle = this.color;
                     if (this.shape === "rect") {
                         ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
                     } else {
@@ -909,10 +899,10 @@
             class Firework {
                 constructor() {
                     this.x = Math.random() * W;
-                    this.y = Math.random() * H * 0.6;
+                    this.y = Math.random() * H * 0.4;
                     this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
                     this.particles = [];
-                    const count = 28;
+                    const count = isMobile ? 18 : 28;
                     for (let i = 0; i < count; i++) {
                         const angle = (Math.PI * 2 / count) * i;
                         const speed = Math.random() * 4 + 2;
@@ -921,7 +911,7 @@
                             vx: Math.cos(angle) * speed,
                             vy: Math.sin(angle) * speed,
                             life: 1, decay: Math.random() * 0.015 + 0.008,
-                            size: Math.random() * 3 + 1
+                            size: Math.random() * 2 + 1
                         });
                     }
                 }
@@ -937,50 +927,37 @@
                     this.particles = this.particles.filter(p => p.life > 0);
                 }
                 draw() {
+                    ctx.globalAlpha = 1;
                     this.particles.forEach(p => {
-                        ctx.save();
-                        ctx.globalAlpha = p.life * 0.8;
                         ctx.fillStyle = this.color;
-                        ctx.shadowColor = this.color;
-                        ctx.shadowBlur = 8;
+                        ctx.globalAlpha = p.life * 0.8;
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                         ctx.fill();
-                        ctx.restore();
                     });
                 }
                 isDead() { return this.particles.length === 0; }
             }
 
             /* ─── INIT ─── */
-            const confetti = Array.from({ length: 120 }, () => new Confetti(false));
-            const stars = Array.from({ length: 60 }, () => new Star());
+            const confettiCount = isMobile ? 60 : 120;
+            const starCount = isMobile ? 30 : 60;
+            const confetti = Array.from({ length: confettiCount }, () => new Confetti(false));
+            const stars = Array.from({ length: starCount }, () => new Star());
             let fireworks = [];
             let fwTimer = 0;
 
             function loop() {
                 ctx.clearRect(0, 0, W, H);
 
-                // Radial background glow
-                const grad = ctx.createRadialGradient(W * 0.5, H * 0.4, 0, W * 0.5, H * 0.4, W * 0.7);
-                grad.addColorStop(0, "rgba(220,0,0,0.06)");
-                grad.addColorStop(0.5, "rgba(30,58,95,0.04)");
-                grad.addColorStop(1, "transparent");
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, W, H);
-
                 stars.forEach(s => { s.update(); s.draw(); });
-                ctx.globalAlpha = 1;
-
                 confetti.forEach(c => { c.update(); c.draw(); });
-                ctx.globalAlpha = 1;
 
-                // Fireworks
                 fwTimer++;
-                if (fwTimer % 90 === 0) fireworks.push(new Firework());
+                const fwInterval = isMobile ? 120 : 90;
+                if (fwTimer % fwInterval === 0) fireworks.push(new Firework());
                 fireworks.forEach(f => { f.update(); f.draw(); });
                 fireworks = fireworks.filter(f => !f.isDead());
-                ctx.globalAlpha = 1;
 
                 requestAnimationFrame(loop);
             }
@@ -988,7 +965,8 @@
 
             /* ─── BURST CONFETTI ON LOAD ─── */
             setTimeout(() => {
-                for (let i = 0; i < 60; i++) {
+                const burstCount = isMobile ? 30 : 60;
+                for (let i = 0; i < burstCount; i++) {
                     confetti.push(new Confetti(true));
                 }
             }, 600);
