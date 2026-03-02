@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natasha Niranjan | Portfolio</title>
+    <meta name="description"
+        content="Portfolio of Natasha Niranjan - MS Business Analytics at Carnegie Mellon (Tepper), former Deloitte Software Analyst. Data-driven strategy, analytics, and product growth.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Racing stripe overlays -->
+    <div class="racing-stripe stripe-left"></div>
+    <div class="racing-stripe stripe-right"></div>
+
+    <!-- Particle canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-inner">
+            <a href="#hero" class="nav-logo">
+                <img src="nn-logo-n-logo_745848-215.jpg copy.jpg" alt="NN" class="nav-logo-img">
+                <span class="logo-name">NATASHA NIRANJAN</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#publications">Publications</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="telemetry-bar">
+
+            <div class="telemetry-item">
+                <span class="telemetry-label">STATUS</span>
+                <span class="telemetry-value drs-active">OPEN TO WORK</span>
+            </div>
+            <div class="telemetry-item">
+                <span class="telemetry-label">SCROLL</span>
+                <span class="telemetry-value" id="scrollSpeed">0</span>
+            </div>
+            <div class="telemetry-item">
+                <span class="telemetry-label">FOCUS</span>
+                <span class="telemetry-value" id="currentLap">ANALYTICS</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile nav overlay -->
+    <div class="mobile-nav-overlay" id="mobileNav">
+        <ul class="mobile-nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#publications">Publications</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="hero-content">
+            <div class="hero-flag">
+                <div class="checkered-flag"></div>
+            </div>
+            <div class="hero-team-badge">ASPIRING BUSINESS & DATA ANALYTICS CONSULTANT</div>
+            <h1 class="hero-name">
+                <span class="hero-first">NATASHA</span>
+                <span class="hero-last">NIRANJAN</span>
+            </h1>
+            <div class="hero-title-wrapper">
+                <img src="cmu-logo.png" alt="Carnegie Mellon University" class="hero-cmu-logo">
+                <div class="hero-title-text">
+                    <p class="hero-role">MS Business Analytics</p>
+                    <p class="hero-school">Carnegie Mellon University - Tepper</p>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <span class="stat-num" data-target="2">0</span><span class="stat-suffix">+</span>
+                    <span class="stat-label">Years Experience</span>
+                </div>
+                <div class="stat-box stat-logo-box"
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-top: 5px;">
+                    <img src="DeloitteNewLogo.png" alt="Deloitte" class="stat-logo no-invert"
+                        style="height: 48px; width: 48px; object-fit: contain; margin-bottom: 5px; background: #ffffff; padding: 4px; border-radius: 6px;">
+                    <span class="stat-label">Ex Software<br>Analyst</span>
+                </div>
+            </div>
+            <a href="#about" class="hero-cta" id="heroCta">
+                <span>EXPLORE PORTFOLIO</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12l7 7 7-7" />
+                </svg>
+            </a>
+        </div>
+        <div class="hero-scroll-indicator">
+            <div class="scroll-line"></div>
+            <span>SCROLL</span>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="section-header">
+            <h2 class="section-title">ABOUT <span class="accent">ME</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="about-grid">
+            <div class="about-card glass-card">
+                <div class="card-accent"></div>
+                <p>Currently pursuing an <strong>MS in Business Analytics</strong> at Carnegie Mellon University's
+                    Tepper School of Business, passionate about applying data-driven insights to guide product strategy,
+                    growth, and operational excellence.</p>
+                <p>Before Tepper, worked as a <strong>Software Analyst at Deloitte</strong>, supporting enterprise-scale
+                    implementations and cross-functional teams in delivering business solutions - bridging technical
+                    execution and strategic objectives.</p>
+                <p>Enjoys solving problems at the intersection of <strong>data, strategy, and product
+                        innovation</strong>, using analytics to uncover opportunities that improve performance and
+                    customer value. Particularly interested in analytics consulting, strategy, and transformation roles.
+                </p>
+            </div>
+            <div class="about-telemetry">
+                <div class="telemetry-card glass-card">
+                    <div class="card-accent"></div>
+                    <h3>QUICK FACTS</h3>
+                    <div class="data-row">
+                        <span class="data-key">BASE</span>
+                        <span class="data-val">Pittsburgh, PA</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-key">ORIGIN</span>
+                        <span class="data-val">Bengaluru, India</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-key">SCHOOL</span>
+                        <span class="data-val">CMU Tepper</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-key">PROGRAM</span>
+                        <span class="data-val">MSBA</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-key">FOCUS</span>
+                        <span class="data-val">Analytics & Strategy</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section">
+        <div class="section-header">
+            <h2 class="section-title">WORK <span class="accent">EXPERIENCE</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="timeline">
+            <!-- Deloitte -->
+            <div class="timeline-item" data-aos="fade-right">
+                <div class="timeline-marker">
+                    <div class="marker-dot"></div>
+                    <div class="marker-line"></div>
+                </div>
+                <div class="timeline-card glass-card">
+                    <div class="card-accent"></div>
+                    <img src="DeloitteNewLogo.png" alt="Deloitte" class="timeline-logo">
+                    <div class="timeline-header">
+                        <div class="timeline-meta">
+                            <span class="timeline-date">NOV 2022 - JUL 2025</span>
+                            <span class="timeline-duration">2 yrs 9 mos</span>
+                        </div>
+                        <span class="timeline-type full-time">FULL-TIME</span>
+                    </div>
+                    <h3 class="timeline-role">Software Analyst</h3>
+                    <h4 class="timeline-company">Deloitte</h4>
+                    <p class="timeline-location">Bengaluru, Karnataka, India</p>
+                    <div class="timeline-skills">
+                        <span class="skill-chip">Data Visualization</span>
+                        <span class="skill-chip">Python</span>
+                        <span class="skill-chip">SQL</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Goodera -->
+            <div class="timeline-item" data-aos="fade-left">
+                <div class="timeline-marker">
+                    <div class="marker-dot"></div>
+                    <div class="marker-line"></div>
+                </div>
+                <div class="timeline-card glass-card">
+                    <div class="card-accent"></div>
+                    <img src="goodera-logo-1024x280.png" alt="Goodera" class="timeline-logo">
+                    <div class="timeline-header">
+                        <div class="timeline-meta">
+                            <span class="timeline-date">OCT 2021 - OCT 2022</span>
+                            <span class="timeline-duration">1 yr 1 mo</span>
+                        </div>
+                        <span class="timeline-type internship">INTERNSHIP</span>
+                    </div>
+                    <h3 class="timeline-role">Senior Content Writer</h3>
+                    <h4 class="timeline-company">Goodera</h4>
+                    <p class="timeline-location">Bengaluru, Karnataka, India</p>
+                    <div class="timeline-skills">
+                        <span class="skill-chip">Web Content Writing</span>
+                        <span class="skill-chip">Creative Writing</span>
+                    </div>
+                </div>
+            </div>
+            <!-- SJCE STEP -->
+            <div class="timeline-item" data-aos="fade-right">
+                <div class="timeline-marker">
+                    <div class="marker-dot"></div>
+                    <div class="marker-line"></div>
+                </div>
+                <div class="timeline-card glass-card">
+                    <div class="card-accent"></div>
+                    <img src="sjce-step-logo.png" alt="SJCE STEP" class="timeline-logo no-invert">
+                    <div class="timeline-header">
+                        <div class="timeline-meta">
+                            <span class="timeline-date">MAR 2021 - AUG 2021</span>
+                            <span class="timeline-duration">6 mos</span>
+                        </div>
+                        <span class="timeline-type internship">INTERNSHIP</span>
+                    </div>
+                    <h3 class="timeline-role">Software Development Intern</h3>
+                    <h4 class="timeline-company">SJCE Science & Technology Entrepreneurs Park (STEP)</h4>
+                    <p class="timeline-location">Mysore, Karnataka, India</p>
+                    <div class="timeline-skills">
+                        <span class="skill-chip">Data Visualization</span>
+                        <span class="skill-chip">PhpMyAdmin</span>
+                        <span class="skill-chip">PHP</span>
+                        <span class="skill-chip">MySQL</span>
+                        <span class="skill-chip">Web Development</span>
+                        <span class="skill-chip">Responsive Web Design</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Equinox Drones -->
+            <div class="timeline-item" data-aos="fade-left">
+                <div class="timeline-marker">
+                    <div class="marker-dot"></div>
+                    <div class="marker-line"></div>
+                </div>
+                <div class="timeline-card glass-card">
+                    <div class="card-accent"></div>
+                    <img src="eqd-logo_trasperncy.png" alt="Equinox's Drones" class="timeline-logo no-invert">
+                    <div class="timeline-header">
+                        <div class="timeline-meta">
+                            <span class="timeline-date">AUG 2020 - MAR 2021</span>
+                            <span class="timeline-duration">8 mos</span>
+                        </div>
+                        <span class="timeline-type internship">INTERNSHIP</span>
+                    </div>
+                    <h3 class="timeline-role">Content Writer</h3>
+                    <h4 class="timeline-company">Equinox's Drones</h4>
+                    <p class="timeline-location">Bengaluru, Karnataka, India</p>
+                    <div class="timeline-skills">
+                        <span class="skill-chip">Copywriting</span>
+                        <span class="skill-chip">SEO Copywriting</span>
+                        <span class="skill-chip">Digital Copywriting</span>
+                        <span class="skill-chip">Web Content Writing</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Raasta Studios -->
+            <div class="timeline-item" data-aos="fade-right">
+                <div class="timeline-marker">
+                    <div class="marker-dot"></div>
+                    <div class="marker-line"></div>
+                </div>
+                <div class="timeline-card glass-card">
+                    <div class="card-accent"></div>
+                    <img src="Raasta.png" alt="Raasta Studios" class="timeline-logo no-invert">
+                    <div class="timeline-header">
+                        <div class="timeline-meta">
+                            <span class="timeline-date">JUN 2019 - AUG 2019</span>
+                            <span class="timeline-duration">3 mos</span>
+                        </div>
+                        <span class="timeline-type internship">INTERNSHIP</span>
+                    </div>
+                    <h3 class="timeline-role">Research Intern</h3>
+                    <h4 class="timeline-company">Raasta Studios</h4>
+                    <p class="timeline-location">Hyderabad, Telangana, India</p>
+                    <div class="timeline-skills">
+                        <span class="skill-chip">Analytical Skills</span>
+                        <span class="skill-chip">Research Skills</span>
+                        <span class="skill-chip">Market Research</span>
+                        <span class="skill-chip">Design Research</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Oberoi -->
+            <div class="timeline-item" data-aos="fade-left">
+                <div class="timeline-marker">
+                    <div class="marker-dot"></div>
+                    <div class="marker-line"></div>
+                </div>
+                <div class="timeline-card glass-card">
+                    <div class="card-accent"></div>
+                    <img src="Oberoi.png" alt="Oberoi Hotels" class="timeline-logo no-invert">
+                    <div class="timeline-header">
+                        <div class="timeline-meta">
+                            <span class="timeline-date">MAY 2018 - JUL 2018</span>
+                            <span class="timeline-duration">3 mos</span>
+                        </div>
+                        <span class="timeline-type internship">INTERNSHIP</span>
+                    </div>
+                    <h3 class="timeline-role">Sales Intern</h3>
+                    <h4 class="timeline-company">Oberoi Hotels & Resorts</h4>
+                    <p class="timeline-location">Bengaluru, Karnataka, India</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="section">
+        <div class="section-header">
+            <h2 class="section-title">EDUCATION</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="education-grid">
+            <div class="edu-card glass-card" data-aos="zoom-in">
+                <div class="card-accent"></div>
+                <img src="cmu-logo.png" alt="CMU" class="edu-logo">
+                <h3 class="edu-school">Carnegie Mellon University</h3>
+                <p class="edu-degree">Master of Science - Business Analytics</p>
+                <p class="edu-date">Aug 2025 - May 2026</p>
+                <div class="edu-skills">
+                    <span class="skill-chip">Python</span>
+                    <span class="skill-chip">SQL</span>
+                </div>
+            </div>
+            <div class="edu-card glass-card" data-aos="zoom-in">
+                <div class="card-accent"></div>
+                <img src="jssstulogo-5efb17fd00198eb9afb13278fed5e1f5.png" alt="JSS" class="edu-logo logo-contain">
+                <h3 class="edu-school">JSS Science and Technology University</h3>
+                <p class="edu-degree">Bachelor of Engineering - Computer Science</p>
+                <p class="edu-date">2018 - 2022</p>
+                <div class="edu-skills">
+                    <span class="skill-chip">Python</span>
+                    <span class="skill-chip">SQL</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section">
+        <div class="section-header">
+            <h2 class="section-title">SKILLS & <span class="accent">EXPERTISE</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-category glass-card" data-aos="fade-up">
+                <div class="card-accent"></div>
+                <h3 class="skill-cat-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                    </svg>
+                    Technical
+                </h3>
+                <div class="skill-chips-list">
+                    <span class="skill-chip">Python</span>
+                    <span class="skill-chip">SQL</span>
+                    <span class="skill-chip">Data Visualization</span>
+                    <span class="skill-chip">C</span>
+                    <span class="skill-chip">PHP</span>
+                    <span class="skill-chip">MySQL</span>
+                    <span class="skill-chip">PhpMyAdmin</span>
+                </div>
+            </div>
+            <div class="skill-category glass-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-accent"></div>
+                <h3 class="skill-cat-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path
+                            d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                    </svg>
+                    Web & Design
+                </h3>
+                <div class="skill-chips-list">
+                    <span class="skill-chip">Web Development</span>
+                    <span class="skill-chip">Responsive Web Design</span>
+                    <span class="skill-chip">Web Design</span>
+                    <span class="skill-chip">Web Hosting</span>
+                    <span class="skill-chip">Design Research</span>
+                </div>
+            </div>
+            <div class="skill-category glass-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-accent"></div>
+                <h3 class="skill-cat-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                    </svg>
+                    Content & Research
+                </h3>
+                <div class="skill-chips-list">
+                    <span class="skill-chip">Content Writing</span>
+                    <span class="skill-chip">Creative Writing</span>
+                    <span class="skill-chip">Copywriting</span>
+                    <span class="skill-chip">SEO Copywriting</span>
+                    <span class="skill-chip">Market Research</span>
+                    <span class="skill-chip">Analytical Skills</span>
+                    <span class="skill-chip">Research Skills</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Publications Section -->
+    <section id="publications" class="section">
+        <div class="section-header">
+            <h2 class="section-title">PUBLICATIONS</h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="pub-grid">
+            <div class="pub-card glass-card" data-aos="flip-up">
+                <div class="card-accent"></div>
+                <div class="pub-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                </div>
+                <h3 class="pub-title">Cardiac Disease Prediction using Supervised Machine Learning Algorithms</h3>
+                <p class="pub-journal">International Journal for Innovative Research in Science, Engineering, and
+                    Technology</p>
+                <p class="pub-date">Published: July 7, 2022</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Volunteering Section -->
+    <section id="volunteering" class="section" data-sector="S5b">
+        <div class="section-header">
+            <h2 class="section-title">COMMUNITY <span class="accent">INVOLVEMENT</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="volunteer-card glass-card" data-aos="fade-up">
+            <div class="card-accent"></div>
+            <img src="Zomato_FI_new.png" alt="Zomato Feeding India" class="volunteer-logo no-invert">
+            <h3>Community Volunteer</h3>
+            <h4>Zomato Feeding India</h4>
+
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="section-header">
+            <h2 class="section-title">GET IN <span class="accent">TOUCH</span></h2>
+            <div class="section-line"></div>
+        </div>
+        <div class="contact-content">
+            <div class="contact-card glass-card" data-aos="zoom-in">
+                <div class="card-accent"></div>
+                <p class="contact-intro">Interested in exploring solutions at the intersection of data and strategy? I'd
+                    love to connect.
+                </p>
+                <div class="contact-links">
+                    <a href="https://www.linkedin.com/in/natasha-niranjan" target="_blank" rel="noopener"
+                        class="contact-btn">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                        </svg>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="mailto:natasha.niranjan33@gmail.com" class="contact-btn">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2" />
+                            <path d="M22 4l-10 8L2 4" />
+                        </svg>
+                        <span>Email</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-logo">
+                <img src="nn-logo-n-logo_745848-215.jpg copy.jpg" alt="NN" class="footer-logo-img">
+                <span class="logo-name">NATASHA NIRANJAN</span>
+            </div>
+
+            <div class="footer-line"></div>
+            <p class="footer-copy">&copy; 2026 Natasha Niranjan. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

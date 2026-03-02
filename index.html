@@ -4,520 +4,974 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Natasha Niranjan | Portfolio</title>
+    <title>QueryNLP - Natural Language to SQL</title>
     <meta name="description"
-        content="Portfolio of Natasha Niranjan - MS Business Analytics at Carnegie Mellon (Tepper), former Deloitte Software Analyst. Data-driven strategy, analytics, and product growth.">
+        content="An advanced NL-to-SQL MCP Server. Chat with your SQLite, PostgreSQL, and MySQL databases directly and generate interactive Chart.js visualizations.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Rajdhani:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --rb-navy: #060d1e;
+            --rb-dark: #0a1128;
+            --rb-blue: #1e3a5f;
+            --rb-red: #dc0000;
+            --rb-red-glow: #ff2d2d;
+            --rb-yellow: #ffd700;
+            --rb-white: #eaeaea;
+            --rb-gray: #8899aa;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--rb-navy);
+            color: var(--rb-white);
+            overflow: hidden;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+
+        /* ── CANVAS LAYER ── */
+        #bgCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── RACING STRIPES ── */
+        .stripe {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .stripe-l {
+            left: 0;
+            background: linear-gradient(180deg, var(--rb-red), var(--rb-yellow), var(--rb-red));
+            box-shadow: 0 0 20px var(--rb-red);
+        }
+
+        .stripe-r {
+            right: 0;
+            background: linear-gradient(180deg, var(--rb-yellow), var(--rb-red), var(--rb-yellow));
+            box-shadow: 0 0 20px var(--rb-yellow);
+        }
+
+        /* ── MAIN WRAPPER ── */
+        .scene {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 24px 36px;
+            text-align: center;
+            gap: 0;
+            overflow-y: auto;
+        }
+
+        /* Ensure body allows scroll if content is taller than viewport */
+        body {
+            overflow-y: auto !important;
+        }
+
+        /* ── TEAM BADGE (top) ── */
+        .team-badge {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.45rem, 1.5vw, 0.65rem);
+            letter-spacing: 5px;
+            color: var(--rb-yellow);
+            padding: 6px 22px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 30px;
+            background: rgba(255, 215, 0, 0.06);
+            margin-bottom: 20px;
+            animation: fadeSlideDown 0.8s ease-out 0.2s both;
+        }
+
+        /* ── CHECKERED FLAG ── */
+        .flag-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+            animation: fadeSlideDown 0.8s ease-out 0.4s both;
+        }
+
+        .checkered {
+            width: 56px;
+            height: 36px;
+            background-image:
+                linear-gradient(45deg, #fff 25%, transparent 25%),
+                linear-gradient(-45deg, #fff 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #fff 75%),
+                linear-gradient(-45deg, transparent 75%, #fff 75%);
+            background-size: 10px 10px;
+            background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+            border-radius: 4px;
+            opacity: 0.7;
+            animation: flagWave 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes flagWave {
+            from {
+                transform: perspective(200px) rotateY(-8deg) scale(1);
+            }
+
+            to {
+                transform: perspective(200px) rotateY(8deg) scale(1.04);
+            }
+        }
+
+        .flag-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.55rem, 1.8vw, 0.75rem);
+            letter-spacing: 4px;
+            color: var(--rb-gray);
+        }
+
+        /* ── LAP COUNTER ── */
+        .lap-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(220, 0, 0, 0.12);
+            border: 1px solid rgba(220, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 8px 22px;
+            margin-bottom: 24px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.55rem, 1.6vw, 0.7rem);
+            letter-spacing: 3px;
+            color: var(--rb-red-glow);
+            animation: fadeSlideDown 0.8s ease-out 0.5s both;
+        }
+
+        .lap-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--rb-red);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.2
+            }
+        }
+
+        /* ── BIRTHDAY HEADING ── */
+        .birthday-pre {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.6rem, 2vw, 0.9rem);
+            letter-spacing: 8px;
+            color: var(--rb-gray);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            animation: fadeSlideDown 0.8s ease-out 0.6s both;
+        }
+
+        .birthday-main {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.4rem, 8vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 10px;
+            animation: fadeSlideDown 0.9s ease-out 0.7s both;
+        }
+
+        .birthday-main .happy {
+            display: block;
+            background: linear-gradient(135deg, var(--rb-yellow) 0%, #ffaa00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 24px rgba(255, 215, 0, 0.4));
+        }
+
+        .birthday-main .bday {
+            display: block;
+            background: linear-gradient(135deg, var(--rb-red) 0%, var(--rb-red-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px rgba(220, 0, 0, 0.5));
+        }
+
+        /* ── RACE NUMBER 26 ── */
+        .race-number-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 14px;
+            animation: fadeSlideDown 0.9s ease-out 0.8s both;
+        }
+
+        .race-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(4rem, 18vw, 11rem);
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--rb-yellow) 0%, var(--rb-red) 60%, #ff6600 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 40px rgba(220, 0, 0, 0.5)) drop-shadow(0 0 80px rgba(255, 215, 0, 0.2));
+            animation: numberPulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes numberPulse {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 40px rgba(220, 0, 0, 0.5)) drop-shadow(0 0 80px rgba(255, 215, 0, 0.2));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 60px rgba(220, 0, 0, 0.8)) drop-shadow(0 0 120px rgba(255, 215, 0, 0.4));
+            }
+        }
+
+        .race-number-label {
+            position: absolute;
+            bottom: -4px;
+            right: -8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.45rem, 1.4vw, 0.6rem);
+            letter-spacing: 2px;
+            color: var(--rb-gray);
+            background: var(--rb-navy);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* ── NAME ── */
+        .name-line {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.1rem, 4vw, 2.4rem);
+            font-weight: 800;
+            letter-spacing: 6px;
+            color: var(--rb-white);
+            margin-bottom: 6px;
+            animation: fadeSlideDown 0.9s ease-out 0.9s both;
+        }
+
+        /* ── MAX QUOTE ── */
+        .max-quote {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            color: rgba(234, 234, 234, 0.6);
+            letter-spacing: 2px;
+            margin-bottom: 22px;
+            font-style: italic;
+            animation: fadeSlideDown 0.9s ease-out 1s both;
+        }
+
+        .max-quote span {
+            color: var(--rb-yellow);
+            font-style: normal;
+            font-weight: 700;
+        }
+
+        /* ── PODIUM TROPHIES ── */
+        .podium-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 26px;
+            animation: fadeSlideDown 0.9s ease-out 1.1s both;
+        }
+
+        .podium-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .podium-emoji {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+        }
+
+        .podium-bar {
+            width: clamp(52px, 14vw, 80px);
+            border-radius: 6px 6px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .podium-1 .podium-bar {
+            height: clamp(54px, 12vw, 80px);
+            background: linear-gradient(180deg, #ffd700, #b8860b);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .podium-2 .podium-bar {
+            height: clamp(38px, 9vw, 58px);
+            background: linear-gradient(180deg, #c0c0c0, #707070);
+        }
+
+        .podium-3 .podium-bar {
+            height: clamp(28px, 7vw, 44px);
+            background: linear-gradient(180deg, #cd7f32, #7a4817);
+        }
+
+        .podium-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.6rem, 2vw, 0.85rem);
+            font-weight: 800;
+            color: var(--rb-navy);
+        }
+
+        .podium-tag {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(0.5rem, 1.5vw, 0.7rem);
+            letter-spacing: 1px;
+            color: var(--rb-gray);
+            text-align: center;
+            max-width: clamp(52px, 14vw, 80px);
+        }
+
+        /* ── CTA BUTTON ── */
+        .cta-wrap {
+            animation: fadeSlideUp 0.9s ease-out 1.3s both;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.55rem, 1.8vw, 0.75rem);
+            font-weight: 700;
+            letter-spacing: 3px;
+            padding: clamp(12px, 3vw, 16px) clamp(24px, 6vw, 48px);
+            border: 2px solid var(--rb-red);
+            border-radius: 8px;
+            color: var(--rb-white);
+            background: rgba(220, 0, 0, 0.12);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(220, 0, 0, 0.35), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .cta-btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .cta-btn:hover {
+            background: rgba(220, 0, 0, 0.25);
+            box-shadow: 0 0 40px rgba(220, 0, 0, 0.5), 0 0 80px rgba(220, 0, 0, 0.2);
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .cta-btn svg {
+            width: clamp(16px, 4vw, 22px);
+            height: clamp(16px, 4vw, 22px);
+            flex-shrink: 0;
+        }
+
+        /* ── RB LOGO MARK ── */
+        .rb-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 18px;
+            opacity: 0.4;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.45rem, 1.2vw, 0.55rem);
+            letter-spacing: 3px;
+            color: var(--rb-gray);
+            animation: fadeSlideUp 0.9s ease-out 1.5s both;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── DESKTOP FIT — prevent btn going below fold ── */
+        /* Smooth proportional scaling for shorter screens */
+        @media (min-width: 601px) and (max-height: 950px) {
+            .scene {
+                padding: min(20px, 2.5vh) 24px;
+            }
+
+            .team-badge {
+                margin-bottom: min(16px, 2vh);
+                padding: 5px 18px;
+            }
+
+            .flag-row {
+                margin-bottom: min(14px, 1.8vh);
+            }
+
+            .lap-badge {
+                margin-bottom: min(16px, 2vh);
+                padding: 6px 18px;
+            }
+
+            .birthday-pre {
+                margin-bottom: min(6px, 0.8vh);
+            }
+
+            .birthday-main {
+                margin-bottom: min(8px, 1vh);
+                font-size: clamp(2.4rem, 5vh + 3vw, 4.5rem);
+            }
+
+            .race-number-wrap {
+                margin-bottom: min(10px, 1.2vh);
+            }
+
+            .race-number {
+                font-size: clamp(4rem, 10vh + 6vw, 8.5rem);
+            }
+
+            .name-line {
+                margin-bottom: min(6px, 0.8vh);
+            }
+
+            .max-quote {
+                margin-bottom: min(16px, 2vh);
+            }
+
+            .podium-row {
+                margin-bottom: min(18px, 2.5vh);
+            }
+        }
+
+        /* ── MOBILE (≤ 600px) ── */
+        @media (max-width: 600px) {
+            .scene {
+                padding: 20px 18px 32px;
+                justify-content: flex-start;
+                padding-top: max(20px, env(safe-area-inset-top, 20px));
+            }
+
+            /* Badge */
+            .team-badge {
+                font-size: 0.42rem;
+                letter-spacing: 3px;
+                padding: 5px 14px;
+                margin-bottom: 14px;
+            }
+
+            /* Flags row — smaller flags, less gap */
+            .flag-row {
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+
+            .checkered {
+                width: 36px;
+                height: 24px;
+            }
+
+            .flag-label {
+                font-size: 0.55rem;
+                letter-spacing: 2px;
+            }
+
+            /* Lap badge — allow text to wrap */
+            .lap-badge {
+                font-size: 0.5rem;
+                letter-spacing: 1.5px;
+                padding: 6px 14px;
+                margin-bottom: 16px;
+                white-space: normal;
+                text-align: center;
+                line-height: 1.6;
+                max-width: 92vw;
+            }
+
+            /* Pre-heading */
+            .birthday-pre {
+                font-size: 0.5rem;
+                letter-spacing: 4px;
+                margin-bottom: 6px;
+            }
+
+            /* HAPPY BIRTHDAY */
+            .birthday-main {
+                font-size: clamp(2rem, 13vw, 3.5rem);
+                margin-bottom: 6px;
+            }
+
+            /* Race number */
+            .race-number {
+                font-size: clamp(3.5rem, 22vw, 6rem);
+            }
+
+            .race-number-wrap {
+                margin-bottom: 10px;
+            }
+
+            /* Name */
+            .name-line {
+                font-size: clamp(0.9rem, 5vw, 1.4rem);
+                letter-spacing: 3px;
+                margin-bottom: 6px;
+            }
+
+            /* Quote */
+            .max-quote {
+                font-size: 0.78rem;
+                letter-spacing: 1px;
+                margin-bottom: 16px;
+            }
+
+            /* Podium — compact */
+            .podium-row {
+                gap: 6px;
+                margin-bottom: 20px;
+            }
+
+            .podium-bar {
+                width: clamp(44px, 12vw, 64px);
+            }
+
+            .podium-1 .podium-bar {
+                height: clamp(44px, 10vw, 60px);
+            }
+
+            .podium-2 .podium-bar {
+                height: clamp(32px, 8vw, 46px);
+            }
+
+            .podium-3 .podium-bar {
+                height: clamp(24px, 6vw, 36px);
+            }
+
+            .podium-emoji {
+                font-size: 1rem;
+            }
+
+            .podium-num {
+                font-size: 0.65rem;
+            }
+
+            .podium-tag {
+                font-size: 0.5rem;
+                max-width: clamp(44px, 12vw, 64px);
+            }
+
+            /* CTA */
+            .cta-btn {
+                font-size: 0.6rem;
+                padding: 13px 22px;
+                letter-spacing: 2px;
+                width: 90vw;
+                max-width: 340px;
+                justify-content: center;
+            }
+        }
+
+        /* ── SHORT SCREENS (landscape phone, small viewports) ── */
+        @media (max-height: 700px) {
+            .scene {
+                padding-top: 14px;
+                padding-bottom: 18px;
+            }
+
+            .race-number {
+                font-size: clamp(2.5rem, 12vw, 5rem);
+            }
+
+            .race-number-wrap {
+                margin-bottom: 6px;
+            }
+
+            .birthday-main {
+                font-size: clamp(1.8rem, 9vw, 3rem);
+                margin-bottom: 4px;
+            }
+
+            .podium-row {
+                margin-bottom: 14px;
+            }
+
+            .lap-badge {
+                margin-bottom: 12px;
+                padding: 5px 14px;
+            }
+
+            .team-badge {
+                margin-bottom: 10px;
+            }
+
+            .flag-row {
+                margin-bottom: 10px;
+            }
+
+            .max-quote {
+                margin-bottom: 12px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Racing stripe overlays -->
-    <div class="racing-stripe stripe-left"></div>
-    <div class="racing-stripe stripe-right"></div>
 
-    <!-- Particle canvas -->
-    <canvas id="particleCanvas"></canvas>
+    <div class="stripe stripe-l"></div>
+    <div class="stripe stripe-r"></div>
 
+    <!-- Particle + Confetti Canvas -->
+    <canvas id="bgCanvas"></canvas>
 
+    <div class="scene">
 
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-inner">
-            <a href="#hero" class="nav-logo">
-                <img src="nn-logo-n-logo_745848-215.jpg copy.jpg" alt="NN" class="nav-logo-img">
-                <span class="logo-name">NATASHA NIRANJAN</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#publications">Publications</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-                <span></span><span></span><span></span>
-            </button>
+        <!-- Top badge -->
+        <div class="team-badge">🏁 &nbsp; FROM YOUR PIT CREW &nbsp; 🏁</div>
+
+        <!-- Checkered flags row -->
+        <div class="flag-row">
+            <div class="checkered"></div>
+            <span class="flag-label">RACE DAY &nbsp;|&nbsp; MARCH 3, 2026</span>
+            <div class="checkered" style="animation-delay:0.3s"></div>
         </div>
-        <div class="telemetry-bar">
 
-            <div class="telemetry-item">
-                <span class="telemetry-label">STATUS</span>
-                <span class="telemetry-value drs-active">OPEN TO WORK</span>
+        <!-- Lap badge -->
+        <div class="lap-badge">
+            <div class="lap-dot"></div>
+            RACE 26 DONE &nbsp;—&nbsp; CHAMPAGNE ON THE PODIUM 🥂
+        </div>
+
+        <!-- HAPPY BIRTHDAY heading -->
+        <p class="birthday-pre">It's Race Day, Champion 🏆</p>
+        <h1 class="birthday-main">
+            <span class="happy">HAPPY</span>
+            <span class="bday">BIRTHDAY</span>
+        </h1>
+
+        <!-- Race number -->
+        <div class="race-number-wrap">
+            <div class="race-number">26</div>
+            <div class="race-number-label">LAPS OF LIFE</div>
+        </div>
+
+        <!-- Name -->
+        <div class="name-line">NATASHA NIRANJAN</div>
+
+        <!-- Max Verstappen quote -->
+        <p class="max-quote">"Just like <span>MAX</span>, you're built for the podium."</p>
+
+        <!-- Podium -->
+        <div class="podium-row">
+            <div class="podium-block podium-2">
+                <div class="podium-emoji">🥈</div>
+                <div class="podium-bar"><span class="podium-num">2</span></div>
+                <div class="podium-tag">LAST YEAR</div>
             </div>
-            <div class="telemetry-item">
-                <span class="telemetry-label">SCROLL</span>
-                <span class="telemetry-value" id="scrollSpeed">0</span>
+            <div class="podium-block podium-1">
+                <div class="podium-emoji">🏆</div>
+                <div class="podium-bar"><span class="podium-num">1</span></div>
+                <div class="podium-tag">YOU AT 26</div>
             </div>
-            <div class="telemetry-item">
-                <span class="telemetry-label">FOCUS</span>
-                <span class="telemetry-value" id="currentLap">ANALYTICS</span>
+            <div class="podium-block podium-3">
+                <div class="podium-emoji">🥉</div>
+                <div class="podium-bar"><span class="podium-num">3</span></div>
+                <div class="podium-tag">THE REST</div>
             </div>
         </div>
-    </nav>
 
-    <!-- Mobile nav overlay -->
-    <div class="mobile-nav-overlay" id="mobileNav">
-        <ul class="mobile-nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#experience">Experience</a></li>
-            <li><a href="#education">Education</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#publications">Publications</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </div>
-
-    <!-- Hero Section -->
-    <section id="hero">
-        <div class="hero-content">
-            <div class="hero-flag">
-                <div class="checkered-flag"></div>
-            </div>
-            <div class="hero-team-badge">ASPIRING BUSINESS & DATA ANALYTICS CONSULTANT</div>
-            <h1 class="hero-name">
-                <span class="hero-first">NATASHA</span>
-                <span class="hero-last">NIRANJAN</span>
-            </h1>
-            <div class="hero-title-wrapper">
-                <img src="cmu-logo.png" alt="Carnegie Mellon University" class="hero-cmu-logo">
-                <div class="hero-title-text">
-                    <p class="hero-role">MS Business Analytics</p>
-                    <p class="hero-school">Carnegie Mellon University - Tepper</p>
-                </div>
-            </div>
-            <div class="hero-stats">
-                <div class="stat-box">
-                    <span class="stat-num" data-target="2">0</span><span class="stat-suffix">+</span>
-                    <span class="stat-label">Years Experience</span>
-                </div>
-                <div class="stat-box stat-logo-box"
-                    style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-top: 5px;">
-                    <img src="DeloitteNewLogo.png" alt="Deloitte" class="stat-logo no-invert"
-                        style="height: 48px; width: 48px; object-fit: contain; margin-bottom: 5px; background: #ffffff; padding: 4px; border-radius: 6px;">
-                    <span class="stat-label">Ex Software<br>Analyst</span>
-                </div>
-            </div>
-            <a href="#about" class="hero-cta" id="heroCta">
-                <span>EXPLORE PORTFOLIO</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 5v14M5 12l7 7 7-7" />
+        <!-- CTA -->
+        <div class="cta-wrap">
+            <a href="portfolio.html" class="cta-btn" id="ctaBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+                ENTER THE PADDOCK
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
             </a>
         </div>
-        <div class="hero-scroll-indicator">
-            <div class="scroll-line"></div>
-            <span>SCROLL</span>
-        </div>
-    </section>
 
-    <!-- About Section -->
-    <section id="about" class="section">
-        <div class="section-header">
-            <h2 class="section-title">ABOUT <span class="accent">ME</span></h2>
-            <div class="section-line"></div>
-        </div>
-        <div class="about-grid">
-            <div class="about-card glass-card">
-                <div class="card-accent"></div>
-                <p>Currently pursuing an <strong>MS in Business Analytics</strong> at Carnegie Mellon University's
-                    Tepper School of Business, passionate about applying data-driven insights to guide product strategy,
-                    growth, and operational excellence.</p>
-                <p>Before Tepper, worked as a <strong>Software Analyst at Deloitte</strong>, supporting enterprise-scale
-                    implementations and cross-functional teams in delivering business solutions - bridging technical
-                    execution and strategic objectives.</p>
-                <p>Enjoys solving problems at the intersection of <strong>data, strategy, and product
-                        innovation</strong>, using analytics to uncover opportunities that improve performance and
-                    customer value. Particularly interested in analytics consulting, strategy, and transformation roles.
-                </p>
-            </div>
-            <div class="about-telemetry">
-                <div class="telemetry-card glass-card">
-                    <div class="card-accent"></div>
-                    <h3>QUICK FACTS</h3>
-                    <div class="data-row">
-                        <span class="data-key">BASE</span>
-                        <span class="data-val">Pittsburgh, PA</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="data-key">ORIGIN</span>
-                        <span class="data-val">Bengaluru, India</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="data-key">SCHOOL</span>
-                        <span class="data-val">CMU Tepper</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="data-key">PROGRAM</span>
-                        <span class="data-val">MSBA</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="data-key">FOCUS</span>
-                        <span class="data-val">Analytics & Strategy</span>
-                    </div>
 
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Experience Section -->
-    <section id="experience" class="section">
-        <div class="section-header">
-            <h2 class="section-title">WORK <span class="accent">EXPERIENCE</span></h2>
-            <div class="section-line"></div>
-        </div>
-        <div class="timeline">
-            <!-- Deloitte -->
-            <div class="timeline-item" data-aos="fade-right">
-                <div class="timeline-marker">
-                    <div class="marker-dot"></div>
-                    <div class="marker-line"></div>
-                </div>
-                <div class="timeline-card glass-card">
-                    <div class="card-accent"></div>
-                    <img src="DeloitteNewLogo.png" alt="Deloitte" class="timeline-logo">
-                    <div class="timeline-header">
-                        <div class="timeline-meta">
-                            <span class="timeline-date">NOV 2022 - JUL 2025</span>
-                            <span class="timeline-duration">2 yrs 9 mos</span>
-                        </div>
-                        <span class="timeline-type full-time">FULL-TIME</span>
-                    </div>
-                    <h3 class="timeline-role">Software Analyst</h3>
-                    <h4 class="timeline-company">Deloitte</h4>
-                    <p class="timeline-location">Bengaluru, Karnataka, India</p>
-                    <div class="timeline-skills">
-                        <span class="skill-chip">Data Visualization</span>
-                        <span class="skill-chip">Python</span>
-                        <span class="skill-chip">SQL</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Goodera -->
-            <div class="timeline-item" data-aos="fade-left">
-                <div class="timeline-marker">
-                    <div class="marker-dot"></div>
-                    <div class="marker-line"></div>
-                </div>
-                <div class="timeline-card glass-card">
-                    <div class="card-accent"></div>
-                    <img src="goodera-logo-1024x280.png" alt="Goodera" class="timeline-logo">
-                    <div class="timeline-header">
-                        <div class="timeline-meta">
-                            <span class="timeline-date">OCT 2021 - OCT 2022</span>
-                            <span class="timeline-duration">1 yr 1 mo</span>
-                        </div>
-                        <span class="timeline-type internship">INTERNSHIP</span>
-                    </div>
-                    <h3 class="timeline-role">Senior Content Writer</h3>
-                    <h4 class="timeline-company">Goodera</h4>
-                    <p class="timeline-location">Bengaluru, Karnataka, India</p>
-                    <div class="timeline-skills">
-                        <span class="skill-chip">Web Content Writing</span>
-                        <span class="skill-chip">Creative Writing</span>
-                    </div>
-                </div>
-            </div>
-            <!-- SJCE STEP -->
-            <div class="timeline-item" data-aos="fade-right">
-                <div class="timeline-marker">
-                    <div class="marker-dot"></div>
-                    <div class="marker-line"></div>
-                </div>
-                <div class="timeline-card glass-card">
-                    <div class="card-accent"></div>
-                    <img src="sjce-step-logo.png" alt="SJCE STEP" class="timeline-logo no-invert">
-                    <div class="timeline-header">
-                        <div class="timeline-meta">
-                            <span class="timeline-date">MAR 2021 - AUG 2021</span>
-                            <span class="timeline-duration">6 mos</span>
-                        </div>
-                        <span class="timeline-type internship">INTERNSHIP</span>
-                    </div>
-                    <h3 class="timeline-role">Software Development Intern</h3>
-                    <h4 class="timeline-company">SJCE Science & Technology Entrepreneurs Park (STEP)</h4>
-                    <p class="timeline-location">Mysore, Karnataka, India</p>
-                    <div class="timeline-skills">
-                        <span class="skill-chip">Data Visualization</span>
-                        <span class="skill-chip">PhpMyAdmin</span>
-                        <span class="skill-chip">PHP</span>
-                        <span class="skill-chip">MySQL</span>
-                        <span class="skill-chip">Web Development</span>
-                        <span class="skill-chip">Responsive Web Design</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Equinox Drones -->
-            <div class="timeline-item" data-aos="fade-left">
-                <div class="timeline-marker">
-                    <div class="marker-dot"></div>
-                    <div class="marker-line"></div>
-                </div>
-                <div class="timeline-card glass-card">
-                    <div class="card-accent"></div>
-                    <img src="eqd-logo_trasperncy.png" alt="Equinox's Drones" class="timeline-logo no-invert">
-                    <div class="timeline-header">
-                        <div class="timeline-meta">
-                            <span class="timeline-date">AUG 2020 - MAR 2021</span>
-                            <span class="timeline-duration">8 mos</span>
-                        </div>
-                        <span class="timeline-type internship">INTERNSHIP</span>
-                    </div>
-                    <h3 class="timeline-role">Content Writer</h3>
-                    <h4 class="timeline-company">Equinox's Drones</h4>
-                    <p class="timeline-location">Bengaluru, Karnataka, India</p>
-                    <div class="timeline-skills">
-                        <span class="skill-chip">Copywriting</span>
-                        <span class="skill-chip">SEO Copywriting</span>
-                        <span class="skill-chip">Digital Copywriting</span>
-                        <span class="skill-chip">Web Content Writing</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Raasta Studios -->
-            <div class="timeline-item" data-aos="fade-right">
-                <div class="timeline-marker">
-                    <div class="marker-dot"></div>
-                    <div class="marker-line"></div>
-                </div>
-                <div class="timeline-card glass-card">
-                    <div class="card-accent"></div>
-                    <img src="Raasta.png" alt="Raasta Studios" class="timeline-logo no-invert">
-                    <div class="timeline-header">
-                        <div class="timeline-meta">
-                            <span class="timeline-date">JUN 2019 - AUG 2019</span>
-                            <span class="timeline-duration">3 mos</span>
-                        </div>
-                        <span class="timeline-type internship">INTERNSHIP</span>
-                    </div>
-                    <h3 class="timeline-role">Research Intern</h3>
-                    <h4 class="timeline-company">Raasta Studios</h4>
-                    <p class="timeline-location">Hyderabad, Telangana, India</p>
-                    <div class="timeline-skills">
-                        <span class="skill-chip">Analytical Skills</span>
-                        <span class="skill-chip">Research Skills</span>
-                        <span class="skill-chip">Market Research</span>
-                        <span class="skill-chip">Design Research</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Oberoi -->
-            <div class="timeline-item" data-aos="fade-left">
-                <div class="timeline-marker">
-                    <div class="marker-dot"></div>
-                    <div class="marker-line"></div>
-                </div>
-                <div class="timeline-card glass-card">
-                    <div class="card-accent"></div>
-                    <img src="Oberoi.png" alt="Oberoi Hotels" class="timeline-logo no-invert">
-                    <div class="timeline-header">
-                        <div class="timeline-meta">
-                            <span class="timeline-date">MAY 2018 - JUL 2018</span>
-                            <span class="timeline-duration">3 mos</span>
-                        </div>
-                        <span class="timeline-type internship">INTERNSHIP</span>
-                    </div>
-                    <h3 class="timeline-role">Sales Intern</h3>
-                    <h4 class="timeline-company">Oberoi Hotels & Resorts</h4>
-                    <p class="timeline-location">Bengaluru, Karnataka, India</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    </div><!-- /scene -->
 
-    <!-- Education Section -->
-    <section id="education" class="section">
-        <div class="section-header">
-            <h2 class="section-title">EDUCATION</h2>
-            <div class="section-line"></div>
-        </div>
-        <div class="education-grid">
-            <div class="edu-card glass-card" data-aos="zoom-in">
-                <div class="card-accent"></div>
-                <img src="cmu-logo.png" alt="CMU" class="edu-logo">
-                <h3 class="edu-school">Carnegie Mellon University</h3>
-                <p class="edu-degree">Master of Science - Business Analytics</p>
-                <p class="edu-date">Aug 2025 - May 2026</p>
-                <div class="edu-skills">
-                    <span class="skill-chip">Python</span>
-                    <span class="skill-chip">SQL</span>
-                </div>
-            </div>
-            <div class="edu-card glass-card" data-aos="zoom-in">
-                <div class="card-accent"></div>
-                <img src="jssstulogo-5efb17fd00198eb9afb13278fed5e1f5.png" alt="JSS" class="edu-logo logo-contain">
-                <h3 class="edu-school">JSS Science and Technology University</h3>
-                <p class="edu-degree">Bachelor of Engineering - Computer Science</p>
-                <p class="edu-date">2018 - 2022</p>
-                <div class="edu-skills">
-                    <span class="skill-chip">Python</span>
-                    <span class="skill-chip">SQL</span>
-                </div>
-            </div>
-        </div>
-    </section>
+    <script>
+        (function () {
+            "use strict";
 
-    <!-- Skills Section -->
-    <section id="skills" class="section">
-        <div class="section-header">
-            <h2 class="section-title">SKILLS & <span class="accent">EXPERTISE</span></h2>
-            <div class="section-line"></div>
-        </div>
-        <div class="skills-grid">
-            <div class="skill-category glass-card" data-aos="fade-up">
-                <div class="card-accent"></div>
-                <h3 class="skill-cat-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path
-                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                    </svg>
-                    Technical
-                </h3>
-                <div class="skill-chips-list">
-                    <span class="skill-chip">Python</span>
-                    <span class="skill-chip">SQL</span>
-                    <span class="skill-chip">Data Visualization</span>
-                    <span class="skill-chip">C</span>
-                    <span class="skill-chip">PHP</span>
-                    <span class="skill-chip">MySQL</span>
-                    <span class="skill-chip">PhpMyAdmin</span>
-                </div>
-            </div>
-            <div class="skill-category glass-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="card-accent"></div>
-                <h3 class="skill-cat-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <path
-                            d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                    </svg>
-                    Web & Design
-                </h3>
-                <div class="skill-chips-list">
-                    <span class="skill-chip">Web Development</span>
-                    <span class="skill-chip">Responsive Web Design</span>
-                    <span class="skill-chip">Web Design</span>
-                    <span class="skill-chip">Web Hosting</span>
-                    <span class="skill-chip">Design Research</span>
-                </div>
-            </div>
-            <div class="skill-category glass-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="card-accent"></div>
-                <h3 class="skill-cat-title">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                    </svg>
-                    Content & Research
-                </h3>
-                <div class="skill-chips-list">
-                    <span class="skill-chip">Content Writing</span>
-                    <span class="skill-chip">Creative Writing</span>
-                    <span class="skill-chip">Copywriting</span>
-                    <span class="skill-chip">SEO Copywriting</span>
-                    <span class="skill-chip">Market Research</span>
-                    <span class="skill-chip">Analytical Skills</span>
-                    <span class="skill-chip">Research Skills</span>
-                </div>
-            </div>
-        </div>
-    </section>
+            /* ─── CANVAS SETUP ─── */
+            const canvas = document.getElementById("bgCanvas");
+            const ctx = canvas.getContext("2d");
+            let W = canvas.width = window.innerWidth;
+            let H = canvas.height = window.innerHeight;
+            window.addEventListener("resize", () => {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            });
 
-    <!-- Publications Section -->
-    <section id="publications" class="section">
-        <div class="section-header">
-            <h2 class="section-title">PUBLICATIONS</h2>
-            <div class="section-line"></div>
-        </div>
-        <div class="pub-grid">
-            <div class="pub-card glass-card" data-aos="flip-up">
-                <div class="card-accent"></div>
-                <div class="pub-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.5">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <polyline points="14 2 14 8 20 8" />
-                        <line x1="16" y1="13" x2="8" y2="13" />
-                        <line x1="16" y1="17" x2="8" y2="17" />
-                        <polyline points="10 9 9 9 8 9" />
-                    </svg>
-                </div>
-                <h3 class="pub-title">Cardiac Disease Prediction using Supervised Machine Learning Algorithms</h3>
-                <p class="pub-journal">International Journal for Innovative Research in Science, Engineering, and
-                    Technology</p>
-                <p class="pub-date">Published: July 7, 2022</p>
-            </div>
-        </div>
-    </section>
+            /* ─── CONFETTI / PARTICLES ─── */
+            const COLORS = [
+                "#dc0000", "#ff2d2d", "#ffd700", "#ffaa00",
+                "#1e3a5f", "#4a90d9", "#ffffff", "#ff6600"
+            ];
 
-    <!-- Volunteering Section -->
-    <section id="volunteering" class="section" data-sector="S5b">
-        <div class="section-header">
-            <h2 class="section-title">COMMUNITY <span class="accent">INVOLVEMENT</span></h2>
-            <div class="section-line"></div>
-        </div>
-        <div class="volunteer-card glass-card" data-aos="fade-up">
-            <div class="card-accent"></div>
-            <img src="Zomato_FI_new.png" alt="Zomato Feeding India" class="volunteer-logo no-invert">
-            <h3>Community Volunteer</h3>
-            <h4>Zomato Feeding India</h4>
+            class Confetti {
+                constructor(burst) {
+                    this.init(burst);
+                }
+                init(burst) {
+                    if (burst) {
+                        this.x = W / 2 + (Math.random() - 0.5) * W * 0.6;
+                        this.y = -10;
+                        this.vy = Math.random() * 4 + 2;
+                    } else {
+                        this.x = Math.random() * W;
+                        this.y = Math.random() * H;
+                        this.vy = Math.random() * 2 + 0.5;
+                    }
+                    this.vx = (Math.random() - 0.5) * 3;
+                    this.size = Math.random() * 9 + 4;
+                    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.15;
+                    this.shape = Math.random() > 0.5 ? "rect" : "circle";
+                    this.opacity = Math.random() * 0.7 + 0.3;
+                    this.wobble = Math.random() * Math.PI * 2;
+                    this.wobbleSpeed = Math.random() * 0.06 + 0.02;
+                }
+                update() {
+                    this.wobble += this.wobbleSpeed;
+                    this.x += this.vx + Math.sin(this.wobble) * 0.8;
+                    this.y += this.vy;
+                    this.rotation += this.rotationSpeed;
+                    this.vy += 0.04; // gravity
+                    if (this.y > H + 20) this.init(true);
+                }
+                draw() {
+                    ctx.save();
+                    ctx.globalAlpha = this.opacity;
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation);
+                    ctx.fillStyle = this.color;
+                    if (this.shape === "rect") {
+                        ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            }
 
-        </div>
-    </section>
+            /* ─── BACKGROUND STARS / SPARKS ─── */
+            class Star {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * W;
+                    this.y = Math.random() * H;
+                    this.size = Math.random() * 1.5 + 0.3;
+                    this.opacity = Math.random() * 0.4 + 0.05;
+                    this.twinkleSpeed = Math.random() * 0.03 + 0.01;
+                    this.twinkle = Math.random() * Math.PI * 2;
+                }
+                update() {
+                    this.twinkle += this.twinkleSpeed;
+                }
+                draw() {
+                    ctx.globalAlpha = this.opacity * (0.6 + 0.4 * Math.sin(this.twinkle));
+                    ctx.fillStyle = Math.random() > 0.7 ? "#ffd700" : "#ffffff";
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
 
-    <!-- Contact Section -->
-    <section id="contact" class="section">
-        <div class="section-header">
-            <h2 class="section-title">GET IN <span class="accent">TOUCH</span></h2>
-            <div class="section-line"></div>
-        </div>
-        <div class="contact-content">
-            <div class="contact-card glass-card" data-aos="zoom-in">
-                <div class="card-accent"></div>
-                <p class="contact-intro">Interested in exploring solutions at the intersection of data and strategy? I'd
-                    love to connect.
-                </p>
-                <div class="contact-links">
-                    <a href="https://www.linkedin.com/in/natasha-niranjan" target="_blank" rel="noopener"
-                        class="contact-btn">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                        </svg>
-                        <span>LinkedIn</span>
-                    </a>
-                    <a href="mailto:natasha.niranjan33@gmail.com" class="contact-btn">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <rect x="2" y="4" width="20" height="16" rx="2" />
-                            <path d="M22 4l-10 8L2 4" />
-                        </svg>
-                        <span>Email</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+            /* ─── FIREWORK ─── */
+            class Firework {
+                constructor() {
+                    this.x = Math.random() * W;
+                    this.y = Math.random() * H * 0.6;
+                    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+                    this.particles = [];
+                    const count = 28;
+                    for (let i = 0; i < count; i++) {
+                        const angle = (Math.PI * 2 / count) * i;
+                        const speed = Math.random() * 4 + 2;
+                        this.particles.push({
+                            x: this.x, y: this.y,
+                            vx: Math.cos(angle) * speed,
+                            vy: Math.sin(angle) * speed,
+                            life: 1, decay: Math.random() * 0.015 + 0.008,
+                            size: Math.random() * 3 + 1
+                        });
+                    }
+                }
+                update() {
+                    this.particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.06;
+                        p.vx *= 0.97;
+                        p.vy *= 0.97;
+                        p.life -= p.decay;
+                    });
+                    this.particles = this.particles.filter(p => p.life > 0);
+                }
+                draw() {
+                    this.particles.forEach(p => {
+                        ctx.save();
+                        ctx.globalAlpha = p.life * 0.8;
+                        ctx.fillStyle = this.color;
+                        ctx.shadowColor = this.color;
+                        ctx.shadowBlur = 8;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    });
+                }
+                isDead() { return this.particles.length === 0; }
+            }
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-logo">
-                <img src="nn-logo-n-logo_745848-215.jpg copy.jpg" alt="NN" class="footer-logo-img">
-                <span class="logo-name">NATASHA NIRANJAN</span>
-            </div>
+            /* ─── INIT ─── */
+            const confetti = Array.from({ length: 120 }, () => new Confetti(false));
+            const stars = Array.from({ length: 60 }, () => new Star());
+            let fireworks = [];
+            let fwTimer = 0;
 
-            <div class="footer-line"></div>
-            <p class="footer-copy">&copy; 2026 Natasha Niranjan. All rights reserved.</p>
-        </div>
-    </footer>
+            function loop() {
+                ctx.clearRect(0, 0, W, H);
 
-    <script src="script.js"></script>
+                // Radial background glow
+                const grad = ctx.createRadialGradient(W * 0.5, H * 0.4, 0, W * 0.5, H * 0.4, W * 0.7);
+                grad.addColorStop(0, "rgba(220,0,0,0.06)");
+                grad.addColorStop(0.5, "rgba(30,58,95,0.04)");
+                grad.addColorStop(1, "transparent");
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, W, H);
+
+                stars.forEach(s => { s.update(); s.draw(); });
+                ctx.globalAlpha = 1;
+
+                confetti.forEach(c => { c.update(); c.draw(); });
+                ctx.globalAlpha = 1;
+
+                // Fireworks
+                fwTimer++;
+                if (fwTimer % 90 === 0) fireworks.push(new Firework());
+                fireworks.forEach(f => { f.update(); f.draw(); });
+                fireworks = fireworks.filter(f => !f.isDead());
+                ctx.globalAlpha = 1;
+
+                requestAnimationFrame(loop);
+            }
+            loop();
+
+            /* ─── BURST CONFETTI ON LOAD ─── */
+            setTimeout(() => {
+                for (let i = 0; i < 60; i++) {
+                    confetti.push(new Confetti(true));
+                }
+            }, 600);
+
+            /* ─── SPARK BURST ON BUTTON CLICK ─── */
+            function spawnSparks(cx, cy) {
+                const n = 16;
+                for (let i = 0; i < n; i++) {
+                    const el = document.createElement("div");
+                    el.style.cssText = `
+                position:fixed;left:${cx}px;top:${cy}px;
+                width:5px;height:5px;border-radius:50%;
+                background:${Math.random() > 0.5 ? "#dc0000" : "#ffd700"};
+                pointer-events:none;z-index:99999;
+                box-shadow:0 0 8px ${Math.random() > 0.5 ? "#dc0000" : "#ffd700"};
+            `;
+                    document.body.appendChild(el);
+                    const angle = (Math.PI * 2 / n) * i + Math.random() * 0.4;
+                    const vel = 70 + Math.random() * 90;
+                    let px = cx, py = cy, op = 1, fr = 0;
+                    const vx = Math.cos(angle) * vel, vy = Math.sin(angle) * vel;
+                    (function animate() {
+                        fr++;
+                        px += vx * 0.03; py += vy * 0.03 + fr * 0.12;
+                        op -= 0.04;
+                        el.style.left = px + "px"; el.style.top = py + "px";
+                        el.style.opacity = op; el.style.transform = `scale(${op})`;
+                        if (op > 0) requestAnimationFrame(animate); else el.remove();
+                    })();
+                }
+            }
+
+            const btn = document.getElementById("ctaBtn");
+            btn.addEventListener("click", e => spawnSparks(e.clientX, e.clientY));
+            btn.addEventListener("touchend", e => {
+                const t = e.changedTouches[0];
+                if (t) spawnSparks(t.clientX, t.clientY);
+            }, { passive: true });
+
+        })();
+    </script>
 </body>
 
 </html>
