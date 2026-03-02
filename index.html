@@ -87,7 +87,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 28px 24px 36px;
+            padding: 60px 24px 80px;
             text-align: center;
             gap: 0;
             overflow-y: auto;
@@ -102,22 +102,23 @@
         .team-badge {
             font-family: 'Orbitron', sans-serif;
             font-size: clamp(0.45rem, 1.5vw, 0.65rem);
-            letter-spacing: 5px;
+            letter-spacing: 8px;
             color: var(--rb-yellow);
-            padding: 6px 22px;
+            padding: 8px 32px;
             border: 1px solid rgba(255, 215, 0, 0.3);
             border-radius: 30px;
             background: rgba(255, 215, 0, 0.06);
-            margin-bottom: 20px;
+            margin-bottom: 40px;
             animation: fadeSlideDown 0.8s ease-out 0.2s both;
+            text-transform: uppercase;
         }
 
         /* ── CHECKERED FLAG ── */
         .flag-row {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 18px;
+            gap: 20px;
+            margin-bottom: 30px;
             animation: fadeSlideDown 0.8s ease-out 0.4s both;
         }
 
@@ -148,34 +149,69 @@
 
         .flag-label {
             font-family: 'Orbitron', sans-serif;
-            font-size: clamp(0.55rem, 1.8vw, 0.75rem);
-            letter-spacing: 4px;
+            font-size: clamp(0.55rem, 1.8vw, 0.8rem);
+            letter-spacing: 6px;
             color: var(--rb-gray);
+            font-weight: 700;
         }
 
-        /* ── LAP COUNTER ── */
-        .lap-badge {
-            display: inline-flex;
+        /* ── RACE TELEMETRY DASH ── */
+        .telemetry-dash {
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
-            background: rgba(220, 0, 0, 0.12);
-            border: 1px solid rgba(220, 0, 0, 0.4);
-            border-radius: 8px;
-            padding: 8px 22px;
-            margin-bottom: 24px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(0.55rem, 1.6vw, 0.7rem);
-            letter-spacing: 3px;
-            color: var(--rb-red-glow);
+            gap: 15px;
+            margin-bottom: 22px;
             animation: fadeSlideDown 0.8s ease-out 0.5s both;
+            width: 100%;
+            max-width: 450px;
         }
 
-        .lap-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--rb-red);
-            animation: blink 1s infinite;
+        .dash-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 40px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .dash-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .dash-label {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.55rem;
+            letter-spacing: 2px;
+            color: var(--rb-gray);
+            font-weight: 600;
+        }
+
+        .dash-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--rb-white);
+        }
+
+        .dash-value.p1 {
+            color: var(--rb-yellow);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .dash-footer-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            color: var(--rb-gray);
+            font-style: italic;
+            opacity: 0.8;
         }
 
         @keyframes blink {
@@ -194,10 +230,10 @@
         .birthday-pre {
             font-family: 'Orbitron', sans-serif;
             font-size: clamp(0.6rem, 2vw, 0.9rem);
-            letter-spacing: 8px;
+            letter-spacing: 10px;
             color: var(--rb-gray);
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 24px;
             animation: fadeSlideDown 0.8s ease-out 0.6s both;
         }
 
@@ -206,7 +242,7 @@
             font-size: clamp(2.4rem, 8vw, 5.5rem);
             font-weight: 900;
             line-height: 1.05;
-            margin-bottom: 10px;
+            margin-bottom: 40px;
             animation: fadeSlideDown 0.9s ease-out 0.7s both;
         }
 
@@ -232,7 +268,7 @@
         .race-number-wrap {
             position: relative;
             display: inline-block;
-            margin-bottom: 14px;
+            margin-bottom: 40px;
             animation: fadeSlideDown 0.9s ease-out 0.8s both;
         }
 
@@ -279,19 +315,20 @@
             font-family: 'Orbitron', sans-serif;
             font-size: clamp(1.1rem, 4vw, 2.4rem);
             font-weight: 800;
-            letter-spacing: 6px;
+            letter-spacing: 12px;
             color: var(--rb-white);
-            margin-bottom: 6px;
+            margin-bottom: 18px;
             animation: fadeSlideDown 0.9s ease-out 0.9s both;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
         /* ── MAX QUOTE ── */
         .max-quote {
             font-family: 'Rajdhani', sans-serif;
-            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-size: clamp(0.8rem, 2.5vw, 1.1rem);
             color: rgba(234, 234, 234, 0.6);
             letter-spacing: 2px;
-            margin-bottom: 22px;
+            margin-bottom: 55px;
             font-style: italic;
             animation: fadeSlideDown 0.9s ease-out 1s both;
         }
@@ -307,8 +344,8 @@
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 26px;
+            gap: 25px;
+            margin-bottom: 60px;
             animation: fadeSlideDown 0.9s ease-out 1.1s both;
         }
 
@@ -536,29 +573,38 @@
                 letter-spacing: 2px;
             }
 
-            /* Lap badge — allow text to wrap */
-            .lap-badge {
-                font-size: 0.5rem;
-                letter-spacing: 1.5px;
-                padding: 6px 14px;
-                margin-bottom: 16px;
-                white-space: normal;
-                text-align: center;
-                line-height: 1.6;
-                max-width: 92vw;
+            /* Telemetry Dash */
+            .telemetry-dash {
+                margin-bottom: 15px;
+                max-width: 280px;
+                gap: 10px;
             }
 
-            /* Pre-heading */
+            .dash-main {
+                padding: 8px 15px;
+                gap: 15px;
+                border-radius: 20px;
+            }
+
+            .dash-value {
+                font-size: 0.8rem;
+            }
+
+            .dash-label {
+                font-size: 0.45rem;
+                letter-spacing: 1px;
+            }
+
             .birthday-pre {
-                font-size: 0.5rem;
+                font-size: 0.45rem;
                 letter-spacing: 4px;
-                margin-bottom: 6px;
+                margin-bottom: 5px;
             }
 
             /* HAPPY BIRTHDAY */
             .birthday-main {
                 font-size: clamp(2rem, 13vw, 3.5rem);
-                margin-bottom: 6px;
+                margin-bottom: 12px;
             }
 
             /* Race number */
@@ -579,9 +625,10 @@
 
             /* Quote */
             .max-quote {
-                font-size: 0.78rem;
+                font-size: 0.72rem;
                 letter-spacing: 1px;
-                margin-bottom: 16px;
+                margin-bottom: 25px;
+                line-height: 1.6;
             }
 
             /* Podium — compact */
@@ -694,10 +741,19 @@
             <div class="checkered" style="animation-delay:0.3s"></div>
         </div>
 
-        <!-- Lap badge -->
-        <div class="lap-badge">
-            <div class="lap-dot"></div>
-            RACE 26 DONE &nbsp;—&nbsp; CHAMPAGNE ON THE PODIUM 🥂
+        <!-- Race Telemetry Dashboard -->
+        <div class="telemetry-dash">
+            <div class="dash-main">
+                <div class="dash-item">
+                    <span class="dash-label">POS</span>
+                    <span class="dash-value p1">P1</span>
+                </div>
+                <div class="dash-item" style="width: 1px; height: 20px; background: rgba(255,255,255,0.1);"></div>
+                <div class="dash-item">
+                    <span class="dash-label">LAP</span>
+                    <span class="dash-value">26</span>
+                </div>
+            </div>
         </div>
 
         <!-- HAPPY BIRTHDAY heading -->
@@ -715,6 +771,8 @@
 
         <!-- Name -->
         <div class="name-line">NATASHA NIRANJAN</div>
+
+
 
         <!-- Max Verstappen quote -->
         <p class="max-quote">"Just like <span>MAX</span>, you're built for the podium."</p>
